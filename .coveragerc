@@ -1,0 +1,8 @@
+[run]
+source = src/skill_thief
+omit = 
+    features/*
+
+[report]
+show_missing = True
+skip_covered = False

@@ -13,7 +13,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["behave>=1.2.6"]
+dev = [
+  "behave>=1.2.6",
+  "coverage[toml]>=7.6",
+  "python-semantic-release>=9.6",
+  "build>=1.2",
+]
 
 [project.scripts]
 skill-thief = "skill_thief.cli:app"
@@ -33,3 +38,12 @@ where = ["src"]
 
 [tool.behave]
 definitions = ["features/steps"]
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+branch = "main"
+changelog_file = "CHANGELOG.md"
+upload_to_release = true
+upload_to_pypi = false
+build_command = "python -m build"
+commit_message = "chore(release): {version}"
