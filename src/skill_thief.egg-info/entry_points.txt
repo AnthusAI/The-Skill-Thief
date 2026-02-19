@@ -1,0 +1,2 @@
+[console_scripts]
+skill-thief = skill_thief.cli:app

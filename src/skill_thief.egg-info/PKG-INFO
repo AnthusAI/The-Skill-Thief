@@ -1,0 +1,62 @@
+Metadata-Version: 2.4
+Name: skill-thief
+Version: 0.1.0
+Summary: Simple CLI to install and update Agent Skills from git or local paths
+Author: Skill Thief Team
+License: MIT
+Project-URL: Homepage, https://github.com/ryan-porter/the-skill-thief
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: typer>=0.12
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: rich>=13.7
+Provides-Extra: dev
+Requires-Dist: behave>=1.2.6; extra == "dev"
+
+# Skill Thief
+
+Skill Thief is a Python CLI for installing and updating Agent Skills from git repositories or local paths. It reads a project-local `.skill-thief.yaml`, downloads skills (optionally from subdirectories), validates them against the Agent Skills spec, and installs them into your configured skills directory.
+
+## Features
+- `skill-thief install [name ...]` — install skills defined in config (all or selected)
+- `skill-thief update [name ...]` — update installed skills to latest ref
+- `skill-thief list` — view configured skills and install status
+- Supports git URLs (https/ssh), optional branch/tag/commit refs, and local paths
+- Validates that each installed skill contains a `SKILL.md` with required YAML frontmatter
+- Optional validation via `skills-ref` if available in PATH (warnings only)
+
+## Configuration
+Create a `.skill-thief.yaml` in your project root:
+
+```yaml
+version: 1
+install_path: ./skills
+skills:
+  - name: pdf-processing
+    source: git+https://github.com/acme/skills.git
+    ref: main
+    subdir: skills/pdf-processing
+  - name: local-skill
+    source: ./third_party/skills-repo
+    subdir: skills/local-skill
+```
+
+Rules:
+- `install_path` optional; default `./skills`.
+- `skills` list entries require `name` and `source`.
+- `source` accepts git URLs or local paths. `ref` optional; `subdir` optional.
+
+## Usage
+```
+pip install skill-thief
+skill-thief install       # installs all skills
+skill-thief install foo   # installs just foo
+skill-thief update        # updates all skills
+skill-thief list          # shows config and status
+```
+
+## BDD Specs
+All user-facing behaviors are covered by Behave scenarios in `features/`.
+
+## License
+MIT
