@@ -104,6 +104,8 @@ description: git skill
 Body
 """ % name)
     subprocess.run(["git", "init"], cwd=repo_dir, check=True, stdout=subprocess.PIPE)
+    subprocess.run(["git", "config", "user.email", "ci@example.com"], cwd=repo_dir, check=True, stdout=subprocess.PIPE)
+    subprocess.run(["git", "config", "user.name", "CI Bot"], cwd=repo_dir, check=True, stdout=subprocess.PIPE)
     subprocess.run(["git", "add", "SKILL.md"], cwd=repo_dir, check=True, stdout=subprocess.PIPE)
     subprocess.run(["git", "commit", "-m", "init"], cwd=repo_dir, check=True, stdout=subprocess.PIPE)
     config = {
@@ -150,7 +152,11 @@ def step_skill_md_name(context, name, expected):
 
 @then("the output should contain \"{text}\"")
 def step_output_contains(context, text):
-    output = context.last_result.stdout + context.last_result.stderr
+    res = context.last_result
+    if hasattr(res, "output"):
+        output = res.output
+    else:
+        output = (res.stdout or "") + (res.stderr or "")
     assert text in output, f"Output did not contain {text}"
 
 
