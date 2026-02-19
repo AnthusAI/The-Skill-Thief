@@ -1,6 +1,0 @@
-typer>=0.12
-PyYAML>=6.0
-rich>=13.7
-
-[dev]
-behave>=1.2.6
