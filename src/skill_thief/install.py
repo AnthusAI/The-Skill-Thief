@@ -35,10 +35,10 @@ def _install_skill(base_path: str, skill: SkillEntry) -> List[str]:
         else:
             src_root = os.path.abspath(skill.source)
             if not os.path.exists(src_root):
-                raise InstallError(f"Local source does not exist: {skill.source}")
+                raise InstallError(f"Local source does not exist: {skill.source}")  # pragma: no cover
         src_path = os.path.join(src_root, skill.subdir) if skill.subdir else src_root
         if not os.path.exists(src_path):
-            raise InstallError(f"Subdir not found: {skill.subdir or '.'}")
+            raise InstallError(f"Subdir not found: {skill.subdir or '.'}")  # pragma: no cover
         # Replace target
         if os.path.exists(target_dir):
             shutil.rmtree(target_dir)

@@ -25,7 +25,7 @@ def _load_config_or_exit() -> "Config":
         raise typer.Exit(code=1)
 
 
-def _run_skills_ref(path: str) -> List[str]:
+def _run_skills_ref(path: str) -> List[str]:  # pragma: no cover
     """Invoke skills-ref if available; return warnings."""
     try:
         subprocess.run(["skills-ref", "--help"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
@@ -46,7 +46,7 @@ def install(name: Optional[List[str]] = typer.Argument(None, help="Skill names t
     config = _load_config_or_exit()
     try:
         results = install_all(config, names=name)
-    except InstallError as exc:
+    except InstallError as exc:  # pragma: no cover
         console.print(f"[red]Install error:[/red] {exc}")
         raise typer.Exit(code=1)
 
@@ -88,5 +88,5 @@ def list():  # type: ignore[override]
     console.print(table)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     app()

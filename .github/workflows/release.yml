@@ -21,7 +21,10 @@ jobs:
           python -m pip install '.[dev]'
       - name: Run Behave (coverage enforced)
         run: |
+          export COVERAGE_PROCESS_START=.coveragerc
+          coverage erase
           coverage run -m behave
+          coverage combine
           coverage report --fail-under=100
 
   release:
@@ -42,4 +45,11 @@ jobs:
           PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m semantic_release publish --verbosity=DEBUG --prerelease_token ${{ secrets.GITHUB_TOKEN }} --token ${{ secrets.GITHUB_TOKEN }} --pypi_token $PYPI_TOKEN
+          python -m pip install --upgrade pip
+          python -m pip install '.[dev]'
+          export COVERAGE_PROCESS_START=.coveragerc
+          coverage erase
+          coverage run -m behave
+          coverage combine
+          coverage report --fail-under=100
+          python -m semantic_release publish --verbosity=DEBUG --token ${{ secrets.GITHUB_TOKEN }} --pypi_token $PYPI_TOKEN

@@ -1,16 +1,21 @@
 import os
+import shlex
 import shutil
 import subprocess
 import tempfile
 from pathlib import Path
 
 from behave import given, when, then
+from typer.testing import CliRunner
+
+from skill_thief.cli import app
 
 ROOT = Path.cwd()
+runner = CliRunner()
 
 
-def run_cmd(cmd, cwd):
-    return subprocess.run(cmd, shell=True, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+def run_cmd(cmd, cwd, env=None):
+    return subprocess.run(cmd, shell=True, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
 
 @given("a clean workspace")
@@ -111,13 +116,14 @@ Body
 
 @when('I run "{cmd}"')
 def step_run(context, cmd):
-    import sys
-
     if cmd.startswith("skill-thief"):
-        # Run via current Python to avoid PATH issues in test env
         parts = cmd.split(" ", 1)
         rest = parts[1] if len(parts) > 1 else ""
-        cmd = f'"{sys.executable}" -m skill_thief.cli {rest}'.strip()
+        args = shlex.split(rest) if rest else []
+        result = runner.invoke(app, args)
+        context.last_result = result
+        return
+
     result = run_cmd(cmd, cwd=context.tmpdir)
     context.last_result = result
 
@@ -150,4 +156,7 @@ def step_output_contains(context, text):
 
 @then("the command should fail")
 def step_command_fail(context):
-    assert context.last_result.returncode != 0
+    code = getattr(context.last_result, "returncode", None)
+    if code is None:
+        code = context.last_result.exit_code
+    assert code != 0

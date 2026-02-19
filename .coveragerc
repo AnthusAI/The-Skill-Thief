@@ -1,5 +1,7 @@
 [run]
 source = src/skill_thief
+parallel = True
+branch = True
 omit = 
     features/*
 
